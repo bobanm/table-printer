@@ -1,0 +1,20 @@
+{
+  "name": "@bobanm/table-printer",
+  "version": "0.0.0",
+  "description": "A simple, ultra lightweight class for printing beautiful minimalistic CLI tables.",
+  "author": "Boban Milošević",
+  "license": "ISC",
+  "keywords": ["table", "printer", "console", "typescript"],
+  "main": "./table-printer.ts",
+  "types": "./table-printer.ts",
+  "files": [
+    "table-printer.ts",
+    "README.md"
+  ],
+  "peerDependencies": {
+    "typescript": ">=5.0.0"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.20"
+  }
+}
