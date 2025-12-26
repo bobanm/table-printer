@@ -10,6 +10,7 @@ export class TablePrinter {
      * @param hasHeader - prints a --- line after table header
      * @param hasBottomLine - prints a --- line after table body
      * @param rightAlignedColumns - indexes of columns to be right-aligned
+     * @param groupByColumn - inserts a separator line when value in this column changes
      */
     constructor(
         rows?: unknown[][],
@@ -17,6 +18,7 @@ export class TablePrinter {
         public hasHeader = true,
         public hasBottomLine = false,
         public rightAlignedColumns: number[] = [],
+        public groupByColumn: number | null = null,
     ) {
 
         if (rows) {
@@ -72,12 +74,21 @@ export class TablePrinter {
     public toString(): string {
 
         let tableString = ''
-        const line = '-'.repeat(this.width) + '\n'
+        const separator = '-'.repeat(this.width) + '\n'
+        let previousValue: unknown = null
 
         for (const [ir, row] of this.table.entries()) {
-            // draw a line after the header
+            // draw a separator line after the header
             if (ir === 1 && this.hasHeader) {
-                tableString += line
+                tableString += separator
+            }
+
+            // draw a separator line if there is a change in the observed non-header column
+            if (this.groupByColumn !== null && previousValue !== row[this.groupByColumn] && !(ir === 0 && this.hasHeader)) {
+                if (previousValue !== null) {
+                    tableString += separator
+                }
+                previousValue = row[this.groupByColumn]
             }
 
             let rowString = ''
@@ -96,7 +107,7 @@ export class TablePrinter {
         }
 
         if (this.hasBottomLine) {
-            tableString += line
+            tableString += separator
         }
 
         return tableString

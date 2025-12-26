@@ -46,4 +46,27 @@ describe('Table Printer', () => {
             'left     right    right   left     right\n'
         )
     })
+
+    test('Inserts a separator when the observed column changes value', () => {
+        table.rightAlignedColumns = [0, 4, 5, 6]
+        table.groupByColumn = 3
+        table.addRow(['#', 'TIME', 'SIDE', 'OUTCOME', 'SHARES', 'PRICE', 'COST $'])
+        table.addRow([1, '04:00:09', 'BUY', 'Down', '216.75', '48.00', '104.04'])
+        table.addRow([2, '04:00:09', 'BUY', 'Down', '68.00', '48.00', '32.64'])
+        table.addRow([3, '04:00:19', 'BUY', 'Up', '10.00', '52.00', '5.20'])
+        table.addRow([4, '04:00:21', 'BUY', 'Up', '15.00', '56.00', '8.40'])
+        table.addRow([5, '04:00:53', 'BUY', 'Down', '10.00', '39.00', '3.90'])
+
+        expect(table.toString()).toBe(
+            '#   TIME       SIDE   OUTCOME   SHARES   PRICE   COST $\n' +
+            '-------------------------------------------------------\n' +
+            '1   04:00:09   BUY    Down      216.75   48.00   104.04\n' +
+            '2   04:00:09   BUY    Down       68.00   48.00    32.64\n' +
+            '-------------------------------------------------------\n' +
+            '3   04:00:19   BUY    Up         10.00   52.00     5.20\n' +
+            '4   04:00:21   BUY    Up         15.00   56.00     8.40\n' +
+            '-------------------------------------------------------\n' +
+            '5   04:00:53   BUY    Down       10.00   39.00     3.90\n'
+        )
+    })
 })
