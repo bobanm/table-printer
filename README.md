@@ -5,9 +5,9 @@ A simple, ultra lightweight class for printing beautiful minimalistic CLI tables
 ```
 COIN   AMOUNT   B.PRICE   VALUE   LIQUID   FUNDING   PROFIT
 -----------------------------------------------------------
-ETH    20.0     4000.00   80000   100.00   -123      23456
-SOL    200.0    200.00    40000   100.00   -55       11111
-AAVE   200.0    300.00    60000   100.00   -82       15161
+ETH      20.0   4000.00   80000   100.00      -123    23456
+SOL     200.0    200.00   40000   100.00       -55    11111
+AAVE    200.0    300.00   60000   100.00       -82    15161
 ```
 
 
@@ -41,8 +41,9 @@ const positionsTable = new TablePrinter([
 ])
 ```
 
-By default, tables use spacing of 3 characters, separates header from the body using a line, and
-does not print a line after the last row. You can override those default values in the constructor:
+By default, tables use spacing of 3 characters, separates header from the body using a line,
+does not print a line after the last row, and aligns all columns to the left. You can override
+those default values in the constructor:
 
 ```typescript
 const positionsTable = new TablePrinter(
@@ -52,6 +53,7 @@ const positionsTable = new TablePrinter(
     4,
     false,
     true,
+    [1, 2, 3, 4, 5, 6],
 )
 ```
 
@@ -61,6 +63,7 @@ Those are all public properties, so you can also change them at any time using:
 positionsTable.spacing = 4
 positionsTable.hasHeader = false
 positionsTable.hasBottomLine = true
+positionsTable.rightAlignedColumns = [1, 2, 3, 4, 5, 6]
 ```
 
 If the contents of the table are provided in advance, you can also add them as additional arrays in

@@ -9,8 +9,15 @@ export class TablePrinter {
      * @param spacing - minimum spacing between columns
      * @param hasHeader - prints a --- line after table header
      * @param hasBottomLine - prints a --- line after table body
+     * @param rightAlignedColumns - indexes of columns to be right-aligned
      */
-    constructor(rows?: unknown[][], public spacing = 3, public hasHeader = true, public hasBottomLine = false) {
+    constructor(
+        rows?: unknown[][],
+        public spacing = 3,
+        public hasHeader = true,
+        public hasBottomLine = false,
+        public rightAlignedColumns: number[] = [],
+    ) {
 
         if (rows) {
             for (const row of rows) {
@@ -76,7 +83,8 @@ export class TablePrinter {
             let rowString = ''
 
             for (const [ie, element] of row.entries()) {
-                rowString += element.padEnd(this.columnWidth[ie]!)
+                const isRightAlignedColumn = this.rightAlignedColumns.includes(ie)
+                rowString += isRightAlignedColumn ? element.padStart(this.columnWidth[ie]!) : element.padEnd(this.columnWidth[ie]!)
 
                 // add column spacing if it is not the last column
                 if (ie < row.length - 1) {

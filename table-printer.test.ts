@@ -32,4 +32,18 @@ describe('Table Printer', () => {
             '-------------------------\n'
         )
     })
+
+    test('Aligns columns to right or left', () => {
+        table.rightAlignedColumns = [1, 2, 4]
+        table.addRow(['left1', 'right1', 'right2', 'left2', 'right3'])
+        table.addRow([1, '2.00', 3.000000, 'four', 5])
+        table.addRow(['left', 'right', 'right', 'left', 'right'])
+
+        expect(table.toString()).toBe(
+            'left1   right1   right2   left2   right3\n' +
+            '----------------------------------------\n' +
+            '1         2.00        3   four         5\n' +
+            'left     right    right   left     right\n'
+        )
+    })
 })
