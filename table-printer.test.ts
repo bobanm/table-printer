@@ -94,4 +94,73 @@ describe('Table Printer', () => {
             '-------------------\n'
         )
     })
+
+    test('Repeats header at the bottom when repeatHeaderAtBottom is true and hasHeader is true', () => {
+        table.addRow(['ID', 'NAME'])
+        table.addRow([1, 'Bob'])
+        table.addRow([2, 'Alice'])
+        table.repeatHeaderAtBottom = true
+        table.hasHeader = true
+
+        expect(table.toString()).toBe(
+            'ID   NAME \n' +
+            '----------\n' +
+            '1    Bob  \n' +
+            '2    Alice\n' +
+            '----------\n' +
+            'ID   NAME \n'
+        )
+    })
+
+    test('Does not repeat header at bottom when repeatHeaderAtBottom is true but hasHeader is false', () => {
+        table.addRow(['ID', 'NAME'])
+        table.addRow([1, 'Bob'])
+        table.addRow([2, 'Alice'])
+        table.repeatHeaderAtBottom = false
+        table.hasHeader = false
+
+        expect(table.toString()).toBe(
+            'ID   NAME \n' +
+            '1    Bob  \n' +
+            '2    Alice\n'
+        )
+    })
+
+    test('Does not repeat header by default', () => {
+        table.addRow(['ID', 'NAME'])
+        table.addRow([1, 'Bob'])
+        table.addRow([2, 'Alice'])
+
+        expect(table.toString()).toBe(
+            'ID   NAME \n' +
+            '----------\n' +
+            '1    Bob  \n' +
+            '2    Alice\n'
+        )
+    })
+
+    test('Handles an empty table', () => {
+
+        expect(table.toString()).toBe('')
+    })
+
+    test('Handles a single row table', () => {
+        table.addRow(['Header'])
+
+        expect(table.toString()).toBe('Header\n')
+    })
+
+    test('Handles spacing = 0', () => {
+        table.addRow(['ID', 'NAME'])
+        table.addRow([11, 'Bob'])
+        table.addRow([12, 'Alice'])
+        table.spacing = 0
+
+        expect(table.toString()).toBe(
+            'IDNAME \n' +
+            '-------\n' +
+            '11Bob  \n' +
+            '12Alice\n'
+        )
+    })
 })

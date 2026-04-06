@@ -3,6 +3,8 @@ interface TablePrinterOptions {
     spacing?: number
     /** Prints a separator line after the table header */
     hasHeader?: boolean
+    /** Prints both a separator line and table header after the table body */
+    repeatHeaderAtBottom?: boolean
     /** Prints a separator line after the table body */
     hasBottomLine?: boolean
     /** Indexes of columns to be right-aligned */
@@ -14,6 +16,7 @@ interface TablePrinterOptions {
 export const DEFAULT_OPTIONS: Required<TablePrinterOptions> = {
     spacing: 3,
     hasHeader: true,
+    repeatHeaderAtBottom: false,
     hasBottomLine: false,
     rightAlignedColumns: [],
     groupByColumn: null,
@@ -27,6 +30,7 @@ export class TablePrinter {
     public spacing = DEFAULT_OPTIONS.spacing
     public hasHeader = DEFAULT_OPTIONS.hasHeader
     public hasBottomLine = DEFAULT_OPTIONS.hasBottomLine
+    public repeatHeaderAtBottom = DEFAULT_OPTIONS.repeatHeaderAtBottom
     public rightAlignedColumns = DEFAULT_OPTIONS.rightAlignedColumns
     public groupByColumn = DEFAULT_OPTIONS.groupByColumn
 
@@ -40,6 +44,13 @@ export class TablePrinter {
         options: TablePrinterOptions = {},
     ) {
         Object.assign(this, options)
+
+        // sanitize the options
+        // if the table has no header, it can't print it at the bottom
+        // if needed, the user can still override this by manually setting this.repeatHeaderAtBottom = true
+        if (!this.hasHeader) {
+            this.repeatHeaderAtBottom = false
+        }
 
         if (rows) {
             for (const row of rows) {
@@ -93,7 +104,13 @@ export class TablePrinter {
      */
     public toString(): string {
 
+        if (this.table.length === 0) {
+
+            return ''
+        }
+
         let tableString = ''
+        let headerString = ''
         const separator = '-'.repeat(this.width) + '\n'
         let previousValue: unknown = null
 
@@ -123,11 +140,20 @@ export class TablePrinter {
                 }
             }
 
+            // save header, if it needs to be re-printed also as the footer
+            if (ir === 0 && this.repeatHeaderAtBottom) {
+                headerString = rowString + '\n'
+            }
+
             tableString += rowString + '\n'
         }
 
-        if (this.hasBottomLine) {
+        if (this.hasBottomLine || this.repeatHeaderAtBottom) {
             tableString += separator
+        }
+
+        if (this.repeatHeaderAtBottom) {
+            tableString += headerString
         }
 
         return tableString

@@ -52,6 +52,7 @@ By default, your table will
 1. not print a line after the last row
 1. align all columns to the left
 1. not group rows by the value of a certain column
+1. not repeat header row at the bottom
 
 You can override those default values by providing an options object in the constructor:
 
@@ -66,6 +67,7 @@ const tradesTable = new TablePrinter(
         hasBottomLine: true,
         rightAlignedColumns: [0, 4, 5, 6, 7],
         groupByColumn: 3,
+        repeatHeaderAtBottom: true,
     }
 )
 ```
@@ -78,6 +80,7 @@ tradesTable.hasHeader = false
 tradesTable.hasBottomLine = true
 tradesTable.rightAlignedColumns = [0, 4, 5, 6, 7]
 tradesTable.groupByColumn = 3
+tradesTable.repeatHeaderAtBottom = true
 ```
 
 If the contents of the table are provided in advance, you can also add them as additional arrays in
