@@ -1,6 +1,6 @@
-interface TablePrinterOptions {
+export interface TablePrinterOptions {
     /** Minimum spacing between columns */
-    spacing?: number
+    columnSpacing?: number
     /** Prints a separator line after the table header */
     hasHeader?: boolean
     /** Prints both a separator line and table header after the table body */
@@ -14,7 +14,7 @@ interface TablePrinterOptions {
 }
 
 export const DEFAULT_OPTIONS: Required<TablePrinterOptions> = {
-    spacing: 3,
+    columnSpacing: 3,
     hasHeader: true,
     repeatHeaderAtBottom: false,
     hasBottomLine: false,
@@ -27,7 +27,7 @@ export class TablePrinter {
     private table: string[][] = []
     private columnWidth: number[] = [] // max width of each column
 
-    public spacing = DEFAULT_OPTIONS.spacing
+    public columnSpacing = DEFAULT_OPTIONS.columnSpacing
     public hasHeader = DEFAULT_OPTIONS.hasHeader
     public hasBottomLine = DEFAULT_OPTIONS.hasBottomLine
     public repeatHeaderAtBottom = DEFAULT_OPTIONS.repeatHeaderAtBottom
@@ -70,7 +70,7 @@ export class TablePrinter {
             totalWidth += cw
         }
 
-        return totalWidth + (this.columnWidth.length - 1) * this.spacing
+        return totalWidth + (this.columnWidth.length - 1) * this.columnSpacing
     }
 
     /**
@@ -136,7 +136,7 @@ export class TablePrinter {
 
                 // add column spacing if it is not the last column
                 if (ie < row.length - 1) {
-                    rowString += ' '.repeat(this.spacing)
+                    rowString += ' '.repeat(this.columnSpacing)
                 }
             }
 

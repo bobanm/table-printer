@@ -1,29 +1,59 @@
-import { beforeEach, describe, expect, test } from 'bun:test'
-import { TablePrinter, DEFAULT_OPTIONS } from './table-printer'
+import { describe, expect, test } from 'bun:test'
+import { TablePrinter, DEFAULT_OPTIONS, type TablePrinterOptions } from './table-printer'
 
 describe('Table Printer', () => {
-    let table: TablePrinter
 
-    beforeEach(() => {
-        table = new TablePrinter()
+    test('Initializes with rows and options in constructor', () => {
+        const rows = [
+            ['Header1', 'Header2'],
+            ['Value1', 'Value2'],
+        ]
+
+        const options: TablePrinterOptions = {
+            columnSpacing: 5,
+            hasBottomLine: true,
+            rightAlignedColumns: [1],
+        }
+
+        const table = new TablePrinter(rows, options)
+
+        expect(table.columnSpacing).toBe(5)
+        expect(table.hasHeader).toBe(DEFAULT_OPTIONS.hasHeader)
+        expect(table.repeatHeaderAtBottom).toBe(DEFAULT_OPTIONS.repeatHeaderAtBottom)
+        expect(table.hasBottomLine).toBe(true)
+        expect(table.rightAlignedColumns).toEqual([1])
+        expect(table.groupByColumn).toBeNull()
+
+        expect(table.toString()).toBe(
+            'Header1     Header2\n' +
+            '-------------------\n' +
+            'Value1       Value2\n' +
+            '-------------------\n'
+        )
     })
 
     test('Calculates max width of each column and total width of the table', () => {
-        table.addRow([123, '4567.89', false])
-        table.addRow(['hello', 'world', 88])
-        table.spacing = 4
+        const table = new TablePrinter([
+            [123, '4567.89', false],
+            ['hello', 'world', 88],
+        ],
+            { columnSpacing: 4 },
+        )
 
         expect((table as any).columnWidth[0]).toBe(5)
         expect((table as any).columnWidth[1]).toBe(7)
         expect((table as any).columnWidth[2]).toBe(5)
 
-        expect(table.width).toBe(5 + 7 + 5 + 2 * table.spacing)
+        expect(table.width).toBe(5 + 7 + 5 + 2 * table.columnSpacing)
     })
 
     test('Formats the output string', () => {
-        table.addRow(['one', 'two', 'three', 'four'])
-        table.addRow([undefined, '2.00', 3.000000, 'four'])
-        table.hasBottomLine = true
+        const table = new TablePrinter([
+            ['one', 'two', 'three', 'four'],
+            [undefined, '2.00', 3.000000, 'four'],
+        ],
+            { hasBottomLine: true },
+        )
 
         expect(table.toString()).toBe(
             'one   two    three   four\n' +
@@ -34,10 +64,13 @@ describe('Table Printer', () => {
     })
 
     test('Aligns columns to right or left', () => {
-        table.rightAlignedColumns = [1, 2, 4]
-        table.addRow(['left1', 'right1', 'right2', 'left2', 'right3'])
-        table.addRow([1, '2.00', 3.000000, 'four', 5])
-        table.addRow(['left', 'right', 'right', 'left', 'right'])
+        const table = new TablePrinter([
+            ['left1', 'right1', 'right2', 'left2', 'right3'],
+            [1, '2.00', 3.000000, 'four', 5],
+            ['left', 'right', 'right', 'left', 'right'],
+        ],
+            { rightAlignedColumns: [1, 2, 4] },
+        )
 
         expect(table.toString()).toBe(
             'left1   right1   right2   left2   right3\n' +
@@ -47,7 +80,10 @@ describe('Table Printer', () => {
         )
     })
 
-    test('Inserts a separator when the observed column changes value', () => {
+    test('Does not provide any arguments in the constructor, and inserts a separator when the observed column changes value', () => {
+
+        const table = new TablePrinter()
+
         table.rightAlignedColumns = [0, 4, 5, 6]
         table.groupByColumn = 3
         table.addRow(['#', 'TIME', 'SIDE', 'OUTCOME', 'SHARES', 'PRICE', 'COST $'])
@@ -70,97 +106,67 @@ describe('Table Printer', () => {
         )
     })
 
-    test('Initializes with rows and options in constructor', () => {
-        const rows = [
-            ['Header1', 'Header2'],
-            ['Value1', 'Value2']
-        ]
-        const options = {
-            spacing: 5,
-            hasBottomLine: true,
-            rightAlignedColumns: [1]
-        }
-        const customTable = new TablePrinter(rows, options)
-
-        expect(customTable.spacing).toBe(5)
-        expect(customTable.hasHeader).toBe(DEFAULT_OPTIONS.hasHeader)
-        expect(customTable.hasBottomLine).toBe(true)
-        expect(customTable.rightAlignedColumns).toEqual([1])
-        expect(customTable.groupByColumn).toBeNull()
-        expect(customTable.toString()).toBe(
-            'Header1     Header2\n' +
-            '-------------------\n' +
-            'Value1       Value2\n' +
-            '-------------------\n'
-        )
-    })
-
     test('Repeats header at the bottom when repeatHeaderAtBottom is true and hasHeader is true', () => {
-        table.addRow(['ID', 'NAME'])
-        table.addRow([1, 'Bob'])
-        table.addRow([2, 'Alice'])
-        table.repeatHeaderAtBottom = true
-        table.hasHeader = true
+        const table = new TablePrinter([
+            ['ID', 'NAME'],
+            [1, 'Alice'],
+            [2, 'Bob'],
+        ],
+            { repeatHeaderAtBottom: true, hasHeader: true },
+        )
 
         expect(table.toString()).toBe(
             'ID   NAME\n' +
             '----------\n' +
-            '1    Bob\n' +
-            '2    Alice\n' +
+            '1    Alice\n' +
+            '2    Bob\n' +
             '----------\n' +
             'ID   NAME\n'
         )
     })
 
-    test('Does not repeat header at bottom when repeatHeaderAtBottom is true but hasHeader is false', () => {
-        table.addRow(['ID', 'NAME'])
-        table.addRow([1, 'Bob'])
-        table.addRow([2, 'Alice'])
-        table.repeatHeaderAtBottom = false
-        table.hasHeader = false
-
-        expect(table.toString()).toBe(
-            'ID   NAME\n' +
-            '1    Bob\n' +
-            '2    Alice\n'
+    test('Does not repeat header at bottom when repeatHeaderAtBottom is true, but hasHeader is false', () => {
+        const table = new TablePrinter([
+            ['ID', 'NAME'],
+            [1, 'Alice'],
+            [2, 'Bob'],
+        ],
+            { repeatHeaderAtBottom: true, hasHeader: false },
         )
-    })
-
-    test('Does not repeat header by default', () => {
-        table.addRow(['ID', 'NAME'])
-        table.addRow([1, 'Bob'])
-        table.addRow([2, 'Alice'])
 
         expect(table.toString()).toBe(
             'ID   NAME\n' +
-            '----------\n' +
-            '1    Bob\n' +
-            '2    Alice\n'
+            '1    Alice\n' +
+            '2    Bob\n'
         )
     })
 
     test('Handles an empty table', () => {
+        const emptyTable = new TablePrinter()
 
-        expect(table.toString()).toBe('')
+        expect(emptyTable.toString()).toBe('')
     })
 
     test('Handles a single row table', () => {
-        table.addRow(['Header'])
+        const singleRowTable = new TablePrinter([['Header']])
 
-        expect(table.toString()).toBe('Header\n')
+        expect(singleRowTable.toString()).toBe('Header\n')
     })
 
-    test('Handles spacing = 0', () => {
-        table.addRow(['ID', 'NAME'])
-        table.addRow([11, 'Bob'])
-        table.addRow([12, 'Alice'])
-        table.spacing = 0
+    test('Prints tables with 0 column spacing', () => {
+        const zeroSpacingTable = new TablePrinter([
+            ['ID', 'NAME'],
+            [11, 'Alice'],
+            [12, 'Bob'],
+        ],
+            { columnSpacing: 0 }
+        )
 
-        expect(table.toString()).toBe(
+        expect(zeroSpacingTable.toString()).toBe(
             'IDNAME\n' +
             '-------\n' +
-            '11Bob\n' +
-            '12Alice\n'
+            '11Alice\n' +
+            '12Bob\n'
         )
     })
 })
