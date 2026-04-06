@@ -1,6 +1,6 @@
 {
   "name": "@bobanm/table-printer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A simple, ultra lightweight class for printing beautiful minimalistic CLI tables.",
   "author": "Boban Milošević",
   "license": "ISC",
