@@ -1,25 +1,45 @@
+interface TablePrinterOptions {
+    /** Minimum spacing between columns */
+    spacing?: number
+    /** Prints a separator line after the table header */
+    hasHeader?: boolean
+    /** Prints a separator line after the table body */
+    hasBottomLine?: boolean
+    /** Indexes of columns to be right-aligned */
+    rightAlignedColumns?: number[]
+    /** Inserts a separator line when value in this column changes */
+    groupByColumn?: number | null
+}
+
+export const DEFAULT_OPTIONS: Required<TablePrinterOptions> = {
+    spacing: 3,
+    hasHeader: true,
+    hasBottomLine: false,
+    rightAlignedColumns: [],
+    groupByColumn: null,
+}
+
 export class TablePrinter {
 
     private table: string[][] = []
     private columnWidth: number[] = [] // max width of each column
 
+    public spacing = DEFAULT_OPTIONS.spacing
+    public hasHeader = DEFAULT_OPTIONS.hasHeader
+    public hasBottomLine = DEFAULT_OPTIONS.hasBottomLine
+    public rightAlignedColumns = DEFAULT_OPTIONS.rightAlignedColumns
+    public groupByColumn = DEFAULT_OPTIONS.groupByColumn
+
     /**
      * Adds initial rows and modifies default formatting properties.
      * @param rows - array of arrays, each representing a row
-     * @param spacing - minimum spacing between columns
-     * @param hasHeader - prints a --- line after table header
-     * @param hasBottomLine - prints a --- line after table body
-     * @param rightAlignedColumns - indexes of columns to be right-aligned
-     * @param groupByColumn - inserts a separator line when value in this column changes
+     * @param options - formatting options
      */
     constructor(
         rows?: unknown[][],
-        public spacing = 3,
-        public hasHeader = true,
-        public hasBottomLine = false,
-        public rightAlignedColumns: number[] = [],
-        public groupByColumn: number | null = null,
+        options: TablePrinterOptions = {},
     ) {
+        Object.assign(this, options)
 
         if (rows) {
             for (const row of rows) {

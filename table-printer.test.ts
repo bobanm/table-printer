@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from 'bun:test'
-import { TablePrinter } from './table-printer'
+import { TablePrinter, DEFAULT_OPTIONS } from './table-printer'
 
 describe('Table Printer', () => {
     let table: TablePrinter
@@ -67,6 +67,31 @@ describe('Table Printer', () => {
             '4   04:00:21   BUY    Up         15.00   56.00     8.40\n' +
             '-------------------------------------------------------\n' +
             '5   04:00:53   BUY    Down       10.00   39.00     3.90\n'
+        )
+    })
+
+    test('Initializes with rows and options in constructor', () => {
+        const rows = [
+            ['Header1', 'Header2'],
+            ['Value1', 'Value2']
+        ]
+        const options = {
+            spacing: 5,
+            hasBottomLine: true,
+            rightAlignedColumns: [1]
+        }
+        const customTable = new TablePrinter(rows, options)
+
+        expect(customTable.spacing).toBe(5)
+        expect(customTable.hasHeader).toBe(DEFAULT_OPTIONS.hasHeader)
+        expect(customTable.hasBottomLine).toBe(true)
+        expect(customTable.rightAlignedColumns).toEqual([1])
+        expect(customTable.groupByColumn).toBeNull()
+        expect(customTable.toString()).toBe(
+            'Header1     Header2\n' +
+            '-------------------\n' +
+            'Value1       Value2\n' +
+            '-------------------\n'
         )
     })
 })

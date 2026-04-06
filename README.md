@@ -53,18 +53,20 @@ By default, your table will
 1. align all columns to the left
 1. not group rows by the value of a certain column
 
-You can override those default values in the constructor:
+You can override those default values by providing an options object in the constructor:
 
 ```typescript
 const tradesTable = new TablePrinter(
     [
         ['#', 'TIME', 'SIDE', 'OUTCOME', 'SHARES', 'PRICE', 'COST $', 'TOT SHRS'],
     ],
-    4,
-    false,
-    true,
-    [0, 4, 5, 6, 7],
-    3,
+    {
+        spacing: 4,
+        hasHeader: false,
+        hasBottomLine: true,
+        rightAlignedColumns: [0, 4, 5, 6, 7],
+        groupByColumn: 3,
+    }
 )
 ```
 
