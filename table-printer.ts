@@ -140,6 +140,8 @@ export class TablePrinter {
                 }
             }
 
+            rowString = rowString.trimEnd()
+
             // save header, if it needs to be re-printed also as the footer
             if (ir === 0 && this.repeatHeaderAtBottom) {
                 headerString = rowString + '\n'

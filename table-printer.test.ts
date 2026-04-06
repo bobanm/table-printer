@@ -103,12 +103,12 @@ describe('Table Printer', () => {
         table.hasHeader = true
 
         expect(table.toString()).toBe(
-            'ID   NAME \n' +
+            'ID   NAME\n' +
             '----------\n' +
-            '1    Bob  \n' +
+            '1    Bob\n' +
             '2    Alice\n' +
             '----------\n' +
-            'ID   NAME \n'
+            'ID   NAME\n'
         )
     })
 
@@ -120,8 +120,8 @@ describe('Table Printer', () => {
         table.hasHeader = false
 
         expect(table.toString()).toBe(
-            'ID   NAME \n' +
-            '1    Bob  \n' +
+            'ID   NAME\n' +
+            '1    Bob\n' +
             '2    Alice\n'
         )
     })
@@ -132,9 +132,9 @@ describe('Table Printer', () => {
         table.addRow([2, 'Alice'])
 
         expect(table.toString()).toBe(
-            'ID   NAME \n' +
+            'ID   NAME\n' +
             '----------\n' +
-            '1    Bob  \n' +
+            '1    Bob\n' +
             '2    Alice\n'
         )
     })
@@ -157,9 +157,9 @@ describe('Table Printer', () => {
         table.spacing = 0
 
         expect(table.toString()).toBe(
-            'IDNAME \n' +
+            'IDNAME\n' +
             '-------\n' +
-            '11Bob  \n' +
+            '11Bob\n' +
             '12Alice\n'
         )
     })
