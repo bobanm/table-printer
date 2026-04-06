@@ -64,10 +64,10 @@ const tradesTable = new TablePrinter(
     {
         spacing: 4,
         hasHeader: false,
+        repeatHeaderAtBottom: true,
         hasBottomLine: true,
         rightAlignedColumns: [0, 4, 5, 6, 7],
         groupByColumn: 3,
-        repeatHeaderAtBottom: true,
     }
 )
 ```
@@ -77,10 +77,10 @@ Those are all public properties, so you can also change them at any time using:
 ```typescript
 tradesTable.spacing = 4
 tradesTable.hasHeader = false
+tradesTable.repeatHeaderAtBottom = true
 tradesTable.hasBottomLine = true
 tradesTable.rightAlignedColumns = [0, 4, 5, 6, 7]
 tradesTable.groupByColumn = 3
-tradesTable.repeatHeaderAtBottom = true
 ```
 
 If the contents of the table are provided in advance, you can also add them as additional arrays in

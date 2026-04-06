@@ -63,6 +63,20 @@ describe('Table Printer', () => {
         )
     })
 
+    test('Correctly formats the output string when consecutive rows have more columns than the previous rows', () => {
+        const table = new TablePrinter([['ID', 'FOOD']])
+
+        table.addRow([1, 'orange', 33])
+        table.addRow([2, 'apple', 721, false])
+
+        expect(table.toString()).toBe(
+            'ID   FOOD\n' +
+            '-------------------------\n' +
+            '1    orange   33\n' +
+            '2    apple    721   false\n'
+        )
+    })
+
     test('Aligns columns to right or left', () => {
         const table = new TablePrinter([
             ['left1', 'right1', 'right2', 'left2', 'right3'],
