@@ -5,8 +5,9 @@
     "target": "ESNext",
     "module": "Preserve",
     "moduleDetection": "force",
-    "jsx": "react-jsx",
     "allowJs": true,
+    // TypeScript 6 and 7 require all @types/ packages to be explicitly registered
+    "types": ["bun", "react"],
 
     // Bundler mode
     "moduleResolution": "bundler",

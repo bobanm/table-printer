@@ -115,6 +115,14 @@ export class TablePrinter {
         let previousValue: unknown = null
 
         for (const [ir, row] of this.table.entries()) {
+
+            // draw a separator line when the row is empty
+            if (row.length === 0) {
+                tableString += separator
+
+                continue
+            }
+
             // draw a separator line after the header
             if (ir === 1 && this.hasHeader) {
                 tableString += separator

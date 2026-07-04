@@ -77,6 +77,34 @@ describe('Table Printer', () => {
         )
     })
 
+    test('Replaces an empty row with a separator', () => {
+        const table = new TablePrinter(
+            [['METRIC', 'VALUE']],
+            { rightAlignedColumns: [1] },
+        )
+
+        table.addRow(['Gross profit', 315.22])
+        table.addRow(['Fees', -93.21])
+        table.addRow(['Net profit', 222.01])
+        table.addRow([])
+        table.addRow(['Profit / market', 1.02])
+        table.addRow(['Max drawdown', -48.31])
+        table.addRow(['Profit / DD', 4.61])
+
+        expect(table.toString()).toBe(
+            'METRIC             VALUE\n' +
+            '------------------------\n' +
+            'Gross profit      315.22\n' +
+            'Fees              -93.21\n' +
+            'Net profit        222.01\n' +
+            '------------------------\n' +
+            'Profit / market     1.02\n' +
+            'Max drawdown      -48.31\n' +
+            'Profit / DD         4.61\n'
+        )
+    })
+
+
     test('Aligns columns to right or left', () => {
         const table = new TablePrinter([
             ['left1', 'right1', 'right2', 'left2', 'right3'],

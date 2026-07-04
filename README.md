@@ -101,6 +101,12 @@ for (const position of account.assetPositions) {
 }
 ```
 
+To add a manual separator row to your table, simply add an empty row to your table:
+
+```typescript
+tradesTable.addRow([])
+```
+
 Finally, to format the table to a string and print it in the console, use `toString()` method:
 
 ```typescript
