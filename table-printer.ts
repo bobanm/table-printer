@@ -107,24 +107,26 @@ export class TablePrinter {
         let headerString = ''
         const separator = '-'.repeat(this.width) + '\n'
         let previousValue: unknown = null
+        let hasPreviousSeparator = false
 
         for (const [ir, row] of this.table.entries()) {
 
             // draw a separator line when the row is empty
             if (row.length === 0) {
                 tableString += separator
+                hasPreviousSeparator = true
 
                 continue
             }
 
             // draw a separator line after the header
-            if (ir === 1 && this.hasHeader) {
+            if (ir === 1 && this.hasHeader && !hasPreviousSeparator) {
                 tableString += separator
             }
 
             // draw a separator line if there is a change in the observed non-header column
             if (this.groupByColumn !== null && previousValue !== row[this.groupByColumn] && !(ir === 0 && this.hasHeader)) {
-                if (previousValue !== null) {
+                if (previousValue !== null && !hasPreviousSeparator) {
                     tableString += separator
                 }
                 previousValue = row[this.groupByColumn]
@@ -150,9 +152,10 @@ export class TablePrinter {
             }
 
             tableString += rowString + '\n'
+            hasPreviousSeparator = false
         }
 
-        if (this.hasBottomLine || this.repeatHeaderAtBottom) {
+        if ((this.hasBottomLine || this.repeatHeaderAtBottom) && !hasPreviousSeparator) {
             tableString += separator
         }
 

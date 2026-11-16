@@ -233,6 +233,84 @@ describe('Table Printer', () => {
         expect(DEFAULT_OPTIONS.rightAlignedColumns).toEqual([])
     })
 
+    test('Does not print 2 consecutive separators when a manual separator precedes a group change', () => {
+        const table = new TablePrinter(
+            [
+                ['ID', 'NAME'],
+                [1, 'Alice'],
+                [],
+                [2, 'Bob'],
+            ],
+            { groupByColumn: 0 },
+        )
+
+        expect(table.toString()).toBe(
+            'ID   NAME\n' +
+            '----------\n' +
+            '1    Alice\n' +
+            '----------\n' +
+            '2    Bob\n'
+        )
+    })
+
+    test('Does not print 2 consecutive separators when a manual separator follows the header', () => {
+        const table = new TablePrinter([
+            ['ID', 'NAME'],
+            [],
+            [1, 'Alice'],
+        ])
+
+        expect(table.toString()).toBe(
+            'ID   NAME\n' +
+            '----------\n' +
+            '1    Alice\n'
+        )
+    })
+
+    test('Does not print 2 consecutive separators when rendering the bottom line', () => {
+        const table = new TablePrinter(
+            [
+                ['ID', 'NAME'],
+                [1, 'Alice'],
+                [],
+            ],
+            { hasBottomLine: true, repeatHeaderAtBottom: true },
+        )
+
+        expect(table.toString()).toBe(
+            'ID   NAME\n' +
+            '----------\n' +
+            '1    Alice\n' +
+            '----------\n' +
+            'ID   NAME\n'
+        )
+    })
+
+    test('Preserves consecutive explicit separators and later group changes', () => {
+        const table = new TablePrinter(
+            [
+                ['ID', 'NAME'],
+                [1, 'Alice'],
+                [],
+                [],
+                [2, 'Bob'],
+                [3, 'Carol'],
+            ],
+            { groupByColumn: 0 },
+        )
+
+        expect(table.toString()).toBe(
+            'ID   NAME\n' +
+            '----------\n' +
+            '1    Alice\n' +
+            '----------\n' +
+            '----------\n' +
+            '2    Bob\n' +
+            '----------\n' +
+            '3    Carol\n'
+        )
+    })
+
     test('Handles a single row table', () => {
         const singleRowTable = new TablePrinter([['Header']])
 

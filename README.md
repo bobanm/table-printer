@@ -18,10 +18,7 @@ A simple, ultra lightweight class for printing beautiful minimalistic CLI tables
 
 ## Why publishing it?
 
-I noticed that pretty much every CLI project of mine had a need to format and print nice tables.
-So it made sense to avoid code duplication and move it to an external package. I wanted something
-that is simple, lightweight and easy to use. I figured out the other devs might find it useful,
-too.
+I noticed that pretty much every CLI project of mine had a need to format and print nice tables. So it made sense to avoid code duplication and move it to an external package. I wanted something that is simple, lightweight and easy to use. I figured out the other devs might find it useful, too.
 
 
 ## How to use it?
@@ -86,8 +83,7 @@ tradesTable.groupByColumn = 3
 
 When `hasHeader` is false in the constructor, `repeatHeaderAtBottom` is disabled.
 
-If the contents of the table are provided in advance, you can also add them as additional arrays in
-the constructor. Otherwise, you can add them later using `addRow()` method:
+If the contents of the table are provided in advance, you can also add them as additional arrays in the constructor. Otherwise, you can add them later using `addRow()` method:
 
 ```typescript
 const trades = [
@@ -115,11 +111,14 @@ To add a manual separator row to your table, simply add an empty row to your tab
 tradesTable.addRow([])
 ```
 
+An explicit separator is not printed next to an adjacent automatic header, group, or bottom separator.
+
+Consecutive explicit separators are preserved. `null` and `undefined` cells are rendered as empty strings.
+
 Finally, to format the table to a string and print it in the console, use `toString()` method:
 
 ```typescript
 console.log(tradesTable.toString())
 ```
 
-`toString()` includes a trailing newline for non-empty tables. `console.log()` adds
-another newline, leaving a blank line between the table and subsequent output.
+`toString()` includes a trailing newline for non-empty tables. `console.log()` adds another newline, leaving a blank line between the table and subsequent output.
