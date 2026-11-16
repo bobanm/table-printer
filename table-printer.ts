@@ -31,7 +31,8 @@ export class TablePrinter {
     public hasHeader = DEFAULT_OPTIONS.hasHeader
     public hasBottomLine = DEFAULT_OPTIONS.hasBottomLine
     public repeatHeaderAtBottom = DEFAULT_OPTIONS.repeatHeaderAtBottom
-    public rightAlignedColumns = DEFAULT_OPTIONS.rightAlignedColumns
+    // Copy the defaults so mutating one table's alignment does not affect other tables or DEFAULT_OPTIONS.
+    public rightAlignedColumns = [...DEFAULT_OPTIONS.rightAlignedColumns]
     public groupByColumn = DEFAULT_OPTIONS.groupByColumn
 
     /**
@@ -61,6 +62,7 @@ export class TablePrinter {
 
     /**
      * Calculates the total width of the table, including spacing between columns.
+     * @returns table width, or zero when there are no columns
      */
     get width() {
 
@@ -70,7 +72,7 @@ export class TablePrinter {
             totalWidth += cw
         }
 
-        return totalWidth + (this.columnWidth.length - 1) * this.columnSpacing
+        return totalWidth + Math.max(0, this.columnWidth.length - 1) * this.columnSpacing
     }
 
     /**
@@ -81,18 +83,10 @@ export class TablePrinter {
 
         const stringRow: string[] = []
 
-        for (const [i, v] of row.entries()) {
-            if (v === undefined || v === null) {
-                stringRow.push('')
-
-                continue
-            }
-
-            const element = String(v)
+        for (const [index, value] of row.entries()) {
+            const element = value === undefined || value === null ? '' : String(value)
             stringRow.push(element)
-            if (!this.columnWidth[i] || element.length > this.columnWidth[i]) {
-                this.columnWidth[i] = element.length
-            }
+            this.columnWidth[index] = Math.max(this.columnWidth[index] ?? 0, element.length)
         }
 
         this.table.push(stringRow)

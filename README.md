@@ -47,6 +47,7 @@ const tradesTable = new TablePrinter([
 ```
 
 By default, your table will
+
 1. use spacing of 3 characters between columns
 1. separate header from the body using a line
 1. not print a line after the last row
@@ -62,41 +63,48 @@ const tradesTable = new TablePrinter(
         ['#', 'TIME', 'SIDE', 'OUTCOME', 'SHARES', 'PRICE', 'COST $', 'TOT SHRS'],
     ],
     {
-        spacing: 4,
+        columnSpacing: 4,
         hasHeader: false,
-        repeatHeaderAtBottom: true,
+        repeatHeaderAtBottom: false,
         hasBottomLine: true,
         rightAlignedColumns: [0, 4, 5, 6, 7],
         groupByColumn: 3,
-    }
+    },
 )
 ```
 
 Those are all public properties, so you can also change them at any time using:
 
 ```typescript
-tradesTable.spacing = 4
+tradesTable.columnSpacing = 4
 tradesTable.hasHeader = false
-tradesTable.repeatHeaderAtBottom = true
+tradesTable.repeatHeaderAtBottom = false
 tradesTable.hasBottomLine = true
 tradesTable.rightAlignedColumns = [0, 4, 5, 6, 7]
 tradesTable.groupByColumn = 3
 ```
 
+When `hasHeader` is false in the constructor, `repeatHeaderAtBottom` is disabled.
+
 If the contents of the table are provided in advance, you can also add them as additional arrays in
 the constructor. Otherwise, you can add them later using `addRow()` method:
 
 ```typescript
-for (const position of account.assetPositions) {
+const trades = [
+    { time: '21:45:18', side: 'BUY', outcome: 'Down', shares: 20, price: 0.41, totalShares: 20 },
+    { time: '21:45:20', side: 'BUY', outcome: 'Up', shares: 5, price: 0.60, totalShares: 5 },
+]
+
+for (const [index, trade] of trades.entries()) {
     tradesTable.addRow([
         index + 1,
-        convertToEtTimezone(trade.timestamp),
+        trade.time,
         trade.side,
         trade.outcome,
-        trade.size.toFixed(2),
+        trade.shares.toFixed(2),
         (trade.price * 100).toFixed(2),
-        (trade.size * trade.price).toFixed(2),
-        totalShares[outcome].toFixed(2),
+        (trade.shares * trade.price).toFixed(2),
+        trade.totalShares.toFixed(2),
     ])
 }
 ```
@@ -112,3 +120,6 @@ Finally, to format the table to a string and print it in the console, use `toStr
 ```typescript
 console.log(tradesTable.toString())
 ```
+
+`toString()` includes a trailing newline for non-empty tables. `console.log()` adds
+another newline, leaving a blank line between the table and subsequent output.

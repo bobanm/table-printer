@@ -186,7 +186,51 @@ describe('Table Printer', () => {
     test('Handles an empty table', () => {
         const emptyTable = new TablePrinter()
 
+        expect(emptyTable.width).toBe(0)
         expect(emptyTable.toString()).toBe('')
+    })
+
+    test('Handles an explicit separator in a zero-column table without throwing', () => {
+        const table = new TablePrinter([[]])
+
+        expect(table.width).toBe(0)
+        expect(table.toString()).toBe('\n')
+    })
+
+    test('Measures a column containing only null or undefined values as zero width', () => {
+        const table = new TablePrinter([[null], [undefined]])
+
+        expect(table.width).toBe(0)
+    })
+
+    test('Calculates width when the first and last columns contain only null or undefined values', () => {
+        const table = new TablePrinter(
+            [
+                [null, 'Alice', undefined],
+                [undefined, 'Bob', null],
+            ],
+            { hasHeader: false, hasBottomLine: true },
+        )
+
+        expect(table.width).toBe(11)
+        expect(table.toString()).toBe(
+            '   Alice\n' +
+            '   Bob\n' +
+            '-----------\n'
+        )
+    })
+
+    test('Keeps default alignment arrays independent', () => {
+        const first = new TablePrinter()
+        const second = new TablePrinter()
+
+        expect(first.rightAlignedColumns).not.toBe(second.rightAlignedColumns)
+        expect(first.rightAlignedColumns).not.toBe(DEFAULT_OPTIONS.rightAlignedColumns)
+
+        first.rightAlignedColumns.push(0)
+
+        expect(second.rightAlignedColumns).toEqual([])
+        expect(DEFAULT_OPTIONS.rightAlignedColumns).toEqual([])
     })
 
     test('Handles a single row table', () => {
