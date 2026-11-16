@@ -113,8 +113,7 @@ tradesTable.addRow([])
 
 An explicit separator is not printed next to an adjacent automatic header, group, or bottom separator.
 
-Consecutive explicit separators are preserved. `null` and `undefined` cells are rendered as empty strings.
-Rows containing only `null`, `undefined`, or empty strings are ignored. An empty array (`[]`) still inserts a separator.
+Consecutive explicit separators are preserved. `null` and `undefined` cells are rendered as empty strings. Rows containing only `null`, `undefined`, or empty strings are ignored. An empty array (`[]`) still inserts a separator.
 
 Finally, to format the table to a string and print it in the console, use `toString()` method:
 
@@ -123,3 +122,26 @@ console.log(tradesTable.toString())
 ```
 
 `toString()` includes a trailing newline for non-empty tables. `console.log()` adds another newline, leaving a blank line between the table and subsequent output.
+
+## Development and publishing
+
+```shell
+bun run typecheck
+bun run test
+bun run build
+```
+
+Type checking uses `tsconfig.json` for the library and tests without writing files.
+The build independently compiles only `table-printer.ts`, generating `dist/table-printer.js`
+and `dist/table-printer.d.ts`. The ignored `dist/` directory is included in the npm package.
+
+The package exports ES modules for Node.js and Bun. Consumers do not need TypeScript installed to run it.
+
+After updating the package version, inspect the package contents and publish:
+
+```shell
+npm pack --dry-run
+npm publish --access public
+```
+
+The `prepack` hook runs the build automatically before packing or publishing so the package contains current generated files.
