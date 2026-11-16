@@ -197,10 +197,61 @@ describe('Table Printer', () => {
         expect(table.toString()).toBe('\n')
     })
 
-    test('Measures a column containing only null or undefined values as zero width', () => {
-        const table = new TablePrinter([[null], [undefined]])
+    test.each([
+        { description: 'null', row: [null, null] },
+        { description: 'undefined', row: [undefined, undefined] },
+        { description: 'empty strings', row: ['', ''] },
+        { description: 'mixed empty values', row: [null, undefined, ''] },
+    ])('Ignores rows containing only $description', ({ row }) => {
+        const table = new TablePrinter([[...row]], { hasBottomLine: true, repeatHeaderAtBottom: true })
 
         expect(table.width).toBe(0)
+        expect(table.toString()).toBe('')
+    })
+
+    test('Ignores empty-valued rows without changing headers, grouping, separators, or column count', () => {
+        const table = new TablePrinter(
+            [[null, undefined, '']],
+            { groupByColumn: 0, repeatHeaderAtBottom: true },
+        )
+
+        table.addRow(['ID', 'NAME'])
+        table.addRow(['', null, undefined])
+        table.addRow([1, 'Alice'])
+        table.addRow([undefined, '', null])
+        table.addRow([1, 'Bob'])
+        table.addRow([])
+        table.addRow([null, '', undefined])
+        table.addRow([2, 'Carol'])
+        table.addRow(['', undefined, null])
+
+        expect(table.width).toBe(10)
+        expect(table.toString()).toBe(
+            'ID   NAME\n' +
+            '----------\n' +
+            '1    Alice\n' +
+            '1    Bob\n' +
+            '----------\n' +
+            '2    Carol\n' +
+            '----------\n' +
+            'ID   NAME\n'
+        )
+    })
+
+    test('Does not ignore rows containing zero, false, or whitespace', () => {
+        const table = new TablePrinter(
+            [
+                [0, false],
+                [' ', ' '],
+            ],
+            { hasHeader: false },
+        )
+
+        expect(table.width).toBe(9)
+        expect(table.toString()).toBe(
+            '0   false\n' +
+            '\n'
+        )
     })
 
     test('Calculates width when the first and last columns contain only null or undefined values', () => {

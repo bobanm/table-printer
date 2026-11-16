@@ -114,6 +114,7 @@ tradesTable.addRow([])
 An explicit separator is not printed next to an adjacent automatic header, group, or bottom separator.
 
 Consecutive explicit separators are preserved. `null` and `undefined` cells are rendered as empty strings.
+Rows containing only `null`, `undefined`, or empty strings are ignored. An empty array (`[]`) still inserts a separator.
 
 Finally, to format the table to a string and print it in the console, use `toString()` method:
 

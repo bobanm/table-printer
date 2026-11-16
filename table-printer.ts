@@ -77,9 +77,17 @@ export class TablePrinter {
 
     /**
      * Converts every input element to string type and calculates max width of each column.
+     * Ignores non-empty arrays containing only null, undefined, or empty strings.
+     * An empty array inserts an explicit separator.
      * @param row - table row
      */
     public addRow(row: unknown[]) {
+
+        // row must not be an empty array, otherwise a separator would also be filtered out
+        if (row.length > 0 && row.every(value => value === undefined || value === null || value === '')) {
+
+            return
+        }
 
         const stringRow: string[] = []
 
